@@ -101,3 +101,8 @@ ENV/
 .mypy_cache/
 
 *.pth
+
+
+
+.vscode
+*.jpg
