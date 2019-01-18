@@ -5,11 +5,11 @@ import torch.nn.functional as F
 import cv2
 import numpy as np
 
-from net_s3fd import s3fd
-from bbox import nms, decode
+from SFD_pytorch.net_s3fd import s3fd
+from SFD_pytorch.bbox import nms, decode
 
 net = s3fd()
-net.load_state_dict(torch.load('data/s3fd_convert.pth'))
+net.load_state_dict(torch.load('SFD_pytorch/data/s3fd_convert.pth'))
 if torch.cuda.is_available():
     net.cuda()
 net.eval()
@@ -86,9 +86,14 @@ def detect_and_supress(img):
     keep = nms(bboxes, 0.3)[:750]
     bboxes = bboxes[keep]
     bboxes = bboxes[bboxes[:, 4] >= 0.5] # Remove small faces
-
+    
     bboxes = bboxes.astype("int")
-    return bboxes
+    #im = img.copy()
+    #for b in bboxes:
+    #    x1,y1,x2,y2,_ = b
+    #    cv2.rectangle(im,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),1)
+    
+    return bboxes[:, :4]
 
 if __name__ == "__main__":
     img = cv2.imread("maxresdefault.jpg")
