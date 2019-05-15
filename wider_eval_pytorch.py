@@ -76,6 +76,10 @@ def scale_detect(net,img,scale=2.0,facesize=None):
     return bboxlist
 
 def detect_and_supress(img):
+    resize_ratio = 1.0
+    if max(img.shape) > 1080:
+        resize_ratio = 1080 / max(img.shape)
+        img = cv2.resize(img, (0,0), fx=resize_ratio, fy=resize_ratio)
     bbox1 = detect(net, img)
     bbox2 = flip_detect(net, img)
     bbox3 = np.zeros((1, 5))
@@ -87,7 +91,9 @@ def detect_and_supress(img):
     bboxes = bboxes[keep]
     bboxes = bboxes[bboxes[:, 4] >= 0.5] # Remove small faces
     
+    bboxes /= resize_ratio    
     bboxes = bboxes.astype("int")
+
     #im = img.copy()
     #for b in bboxes:
     #    x1,y1,x2,y2,_ = b
