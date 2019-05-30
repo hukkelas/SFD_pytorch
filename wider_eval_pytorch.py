@@ -92,13 +92,16 @@ def detect_and_supress(img):
     bboxes = bboxes[bboxes[:, 4] >= 0.5] # Remove small faces
     
     bboxes /= resize_ratio    
-    bboxes = bboxes.astype("int")
+    
 
     #im = img.copy()
     #for b in bboxes:
     #    x1,y1,x2,y2,_ = b
     #    cv2.rectangle(im,(int(x1),int(y1)),(int(x2),int(y2)),(0,0,255),1)
-    
+    scores = bboxes[:, 4]
+    sorted_ix = np.argsort(scores)[::-1]
+    bboxes = bboxes[sorted_ix]
+    bboxes = bboxes.astype("int")
     return bboxes[:, :4]
 
 if __name__ == "__main__":
